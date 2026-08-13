@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SportZone</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            background: #07110d;
+            color: white;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* FUNDO ANIMADO */
+        body::before {
+            content: "";
+            position: fixed;
+            width: 500px;
+            height: 500px;
+            background: #00ff88;
+            filter: blur(180px);
+            opacity: 0.12;
+            top: -150px;
+            left: -150px;
+            animation: movimento 7s infinite alternate;
+            z-index: -1;
+        }
+
+        @keyframes movimento {
+            from {
+                transform: translate(0, 0);
+            }
+            to {
+                transform: translate(300px, 200px);
+            }
+        }
+
+        /* MENU */
+        header {
+            width: 100%;
+            padding: 25px 8%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            background: rgba(0,0,0,0.25);
+            backdrop-filter: blur(10px);
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+            color: #00ff88;
+        }
+
+        nav {
+            display: flex;
+            gap: 25px;
+        }
+
+        nav a {
+            color: #ddd;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        nav a:hover {
+            color: #00ff88;
+        }
+
+        /* HERO */
+        .hero {
+            min-height: 75vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 40px 20px;
+            animation: aparecer 1.2s ease;
+        }
+
+        @keyframes aparecer {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .bola {
+            font-size: 90px;
+            animation: flutuar 3s infinite ease-in-out;
+            margin-bottom: 20px;
+        }
+
+        @keyframes flutuar {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-20px) rotate(10deg);
+            }
+        }
+
+        .hero h1 {
+            font-size: clamp(40px, 7vw, 80px);
+            margin-bottom: 15px;
+        }
+
+        .hero h1 span {
+            color: #00ff88;
+        }
+
+        .hero p {
+            color: #aaa;
+            font-size: 18px;
+            max-width: 600px;
+            margin-bottom: 35px;
+        }
+
+        /* BOTÃO */
+        .abrir {
+            border: none;
+            background: #00ff88;
+            color: #041009;
+            padding: 16px 30px;
+            border-radius: 10px;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 0 25px rgba(0,255,136,0.3);
+        }
+
+        .abrir:hover {
+            transform: scale(1.08);
+            box-shadow: 0 0 40px rgba(0,255,136,0.6);
+        }
+
+        /* POPUP */
+        .popup {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.75);
+            backdrop-filter: blur(8px);
+
+            display: none;
+            justify-content: center;
+            align-items: center;
+
+            padding: 20px;
+            z-index: 100;
+        }
+
+        .popup.ativo {
+            display: flex;
+            animation: fundo 0.3s ease;
+        }
+
+        @keyframes fundo {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .popup-conteudo {
+            width: min(800px, 100%);
+            max-height: 85vh;
+            overflow-y: auto;
+
+            background: #101b16;
+            border: 1px solid rgba(0,255,136,0.25);
+            border-radius: 18px;
+            padding: 30px;
+
+            box-shadow: 0 0 50px rgba(0,255,136,0.15);
+
+            animation: popup 0.4s ease;
+        }
+
+        @keyframes popup {
+            from {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .popup-topo {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .popup-topo h2 {
+            color: #00ff88;
+        }
+
+        .fechar {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 30px;
+            cursor: pointer;
+        }
+
+        /* ABAS */
+        .abas {
+            display: flex;
+            gap: 8px;
+            border-bottom: 1px solid #26342d;
+            margin-bottom: 25px;
+            overflow-x: auto;
+        }
+
+        .aba {
+            border: none;
+            background: transparent;
+            color: #aaa;
+            padding: 13px 18px;
+            cursor: pointer;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .aba:hover {
+            color: white;
+        }
+
+        .aba.ativa {
+            color: #00ff88;
+            border-bottom: 3px solid #00ff88;
+        }
+
+        /* CONTEÚDO DAS ABAS */
+        .conteudo-aba {
+            display: none;
+            animation: conteudo 0.4s ease;
+        }
+
+        .conteudo-aba.ativo {
+            display: block;
+        }
+
+        @keyframes conteudo {
+            from {
+                opacity: 0;
+                transform: translateX(15px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .card {
+            background: #16231c;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 4px solid #00ff88;
+        }
+
+        .card h3 {
+            margin-bottom: 8px;
+        }
+
+        .card p {
+            color: #aaa;
+            line-height: 1.5;
+        }
+
+        .placar {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            text-align: center;
+            font-size: 25px;
+        }
+
+        .placar strong {
+            color: #00ff88;
+            font-size: 35px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            color: #666;
+        }
+
+        @media (max-width: 600px) {
+            header {
+                padding: 20px;
+            }
+
+            nav {
+                display: none;
+            }
+
+            .popup-conteudo {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="logo">SPORTZONE ⚡</div>
+
+        <nav>
+            <a href="#">Início</a>
+            <a href="#">Esportes</a>
+            <a href="#">Notícias</a>
+        </nav>
+    </header>
+
+    <main class="hero">
+
+        <div class="bola">⚽</div>
+
+        <h1>Viva o <span>Esporte</span></h1>
+
+        <p>
+            Acompanhe resultados, notícias, campeonatos
+            e tudo que acontece no mundo dos esportes.
+        </p>
+
+        <button class="abrir" onclick="abrirPopup()">
+            🏆 Ver informações
+        </button>
+
+    </main>
+
+    <!-- POPUP -->
+    <div class="popup" id="popup">
+
+        <div class="popup-conteudo">
+
+            <div class="popup-topo">
+                <h2>🏆 Central Esportiva</h2>
+
+                <button class="fechar" onclick="fecharPopup()">
+                    &times;
+                </button>
+            </div>
+
+            <!-- ABAS -->
+            <div class="abas">
+
+                <button class="aba ativa" onclick="mostrarAba('futebol', this)">
+                    ⚽ Futebol
+                </button>
+
+                <button class="aba" onclick="mostrarAba('basquete', this)">
+                    🏀 Basquete
+                </button>
+
+                <button class="aba" onclick="mostrarAba('formula', this)">
+                    🏎️ Fórmula 1
+                </button>
+
+                <button class="aba" onclick="mostrarAba('noticias', this)">
+                    📰 Notícias
+                </button>
+
+            </div>
+
+            <!-- FUTEBOL -->
+            <div class="conteudo-aba ativo" id="futebol">
+
+                <div class="card">
+                    <h3>⚽ Jogo em destaque</h3>
+
+                    <div class="placar">
+                        <span>Brasil</span>
+
+                        <strong>2 × 1</strong>
+
+                        <span>Argentina</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>🏆 Campeonato</h3>
+                    <p>
+                        Confira os principais campeonatos,
+                        classificações e resultados.
+                    </p>
+                </div>
+
+            </div>
+
+            <!-- BASQUETE -->
+            <div class="conteudo-aba" id="basquete">
+
+                <div class="card">
+                    <h3>🏀 Basquete</h3>
+
+                    <p>
+                        Acompanhe partidas, pontuações,
+                        equipes e os principais jogadores.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3>🔥 Destaque</h3>
+
+                    <p>
+                        O basquete está pegando fogo!
+                        Confira os próximos confrontos.
+                    </p>
+                </div>
+
+            </div>
+
+            <!-- FORMULA 1 -->
+            <div class="conteudo-aba" id="formula">
+
+                <div class="card">
+                    <h3>🏎️ Fórmula 1</h3>
+
+                    <p>
+                        Velocidade, ultrapassagens e muita
+                        emoção nas pistas.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3>🏁 Próxima corrida</h3>
+
+                    <p>
+                        Prepare-se para mais uma disputa
+                        emocionante pelo campeonato.
+                    </p>
+                </div>
+
+            </div>
+
+            <!-- NOTÍCIAS -->
+            <div class="conteudo-aba" id="noticias">
+
+                <div class="card">
+                    <h3>📰 Últimas notícias</h3>
+
+                    <p>
+                        Grandes novidades estão movimentando
+                        o mundo dos esportes.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3>⭐ Mercado esportivo</h3>
+
+                    <p>
+                        Transferências, contratações e
+                        novidades dos principais clubes.
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <footer>
+        © 2026 SportZone — Todos os direitos reservados.
+    </footer>
+
+
+    <script>
+
+        // ABRIR POPUP
+        function abrirPopup() {
+            document.getElementById("popup").classList.add("ativo");
+        }
+
+        // FECHAR POPUP
+        function fecharPopup() {
+            document.getElementById("popup").classList.remove("ativo");
+        }
+
+        // TROCAR ABAS
+        function mostrarAba(nome, botao) {
+
+            // Esconde todos os conteúdos
+            const conteudos =
+                document.querySelectorAll(".conteudo-aba");
+
+            conteudos.forEach(conteudo => {
+                conteudo.classList.remove("ativo");
+            });
+
+            // Remove estado ativo dos botões
+            const abas =
+                document.querySelectorAll(".aba");
+
+            abas.forEach(aba => {
+                aba.classList.remove("ativa");
+            });
+
+            // Mostra conteúdo escolhido
+            document.getElementById(nome)
+                .classList.add("ativo");
+
+            // Ativa botão
+            botao.classList.add("ativa");
+        }
+
+        // FECHAR CLICANDO FORA DO POPUP
+        document.getElementById("popup").addEventListener("click", function(event) {
+
+            if (event.target === this) {
+                fecharPopup();
+            }
+
+        });
+
+        // FECHAR COM ESC
+        document.addEventListener("keydown", function(event) {
+
+            if (event.key === "Escape") {
+                fecharPopup();
+            }
+
+        });
+
+    </script>
+
+</body>
+</html>
